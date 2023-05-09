@@ -1,50 +1,46 @@
-const express = require("express")
-const cors = require("cors")
+const express = require("express");
+const cors = require("cors");
+const { dbConection } = require("../db/config");
 
 class Server {
+  constructor() {
+    this.app = express();
+    this.port = process.env.PORT;
+    this.usuariosPath = "/api/usuarios";
 
-    constructor() {
-        this.app = express()
-        this.port = process.env.PORT
-        this.usuariosPath = '/api/usuarios'
-        // Middlewares
-        this.middlewares()
+    //conectar a la base de datos
+    this.conectarDB();
+    // Middlewares
+    this.middlewares();
 
+    //rutas de mi aplicacion
+    this.routes();
+  }
 
-        //rutas de mi aplicacion
-        this.routes()
-    }
+  async conectarDB() {
+    await dbConection();
+  }
 
+  middlewares() {
+    //cors
+    this.app.use(cors());
 
-    middlewares(){
+    // parseo y lectura del body
+    this.app.use(express.json());
 
-        //cors
-        this.app.use(cors())
+    //directorio publico
+    this.app.use(express.static("public"));
+  }
 
-        // parseo y lectura del body
-        this.app.use(express.json())
+  routes() {
+    this.app.use(this.usuariosPath, require("../routes/user.routes"));
+  }
 
-        //directorio publico
-        this.app.use( express.static("public") )
-
-
-    }
-
-
-    routes() {
-        this.app.use(this.usuariosPath, require("../routes/user.routes"))
-    }
-
-
-    listen() {
-        this.app.listen( this.port, ()=> {
-            console.log("server active on port",this.port)
-        })
-    }
-
+  listen() {
+    this.app.listen(this.port, () => {
+      console.log("server active on port", this.port);
+    });
+  }
 }
 
-
-
-
-module.exports = Server
+module.exports = Server;
