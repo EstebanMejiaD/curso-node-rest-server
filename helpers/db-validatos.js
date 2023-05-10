@@ -33,6 +33,7 @@ const esRoleValido = async (rol = '') => {
 
 
 
+
 module.exports = {
     esRoleValido,
     existeEmail,
