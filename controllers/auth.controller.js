@@ -59,10 +59,10 @@ const googleSingIn = async (req=request, res=response)=> {
 
         const {nombre, img, correo} = await googleVerify(id_token)
 
-        console.log({usuarioGoodle:{nombre, img, correo}})
+
 
        let usuario = await Usuario.findOne({correo})
-       console.log(usuario)
+    
        
        if (usuario === null) {
             //crearlo
