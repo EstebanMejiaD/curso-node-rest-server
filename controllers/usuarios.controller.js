@@ -3,13 +3,25 @@ const bcryptjs = require("bcryptjs");
 
 const Usuario = require("../models/usuario");
 
-const obtenerUsuario = async (req = request, res = response) => {
-  const body = req.body;
+const obtenerUsuarios = async (req = request, res = response) => {
+  
+  const { limite = 5, desde = 0 } = req.query
+  const query = {estado: true}
+  // const usuarios = await Usuario.find(query)
+  //     .skip(Number(desde))
+  //     .limit(Number(limite))
+  // const total = await Usuario.countDocuments(query)
 
-  console.log(usuario);
+  const [total, usuarios] = await Promise.all([
+    Usuario.countDocuments(query),
+    Usuario.find(query)
+    .skip(Number(desde))
+    .limit(Number(limite))
+])
+
   res.json({
-    msg: "get API - controlador",
-    body,
+    total,
+    usuarios
   });
 };
 
@@ -49,20 +61,28 @@ const actualizarUsuario = async(req=request, res = response) => {
 
 
 
-  res.json({
-    msg: "put API - controlador",
+  res.json(usuario);
+};
+
+const eliminarUsuario = async (req= request, res = response) => {
+
+  const { id } = req.params 
+
+
+  //fisicamente lo borramos
+  // const usuario = await Usuario.findByIdAndDelete( id )
+
+
+  //  virtualmente lo borra cambiando el estdo 
+  const usuario = await Usuario.findByIdAndUpdate( id, {estado: false} )
+
+   res.json({
     usuario
   });
 };
 
-const eliminarUsuario = (req, res = response) => {
-  res.json({
-    msg: "delete API - controlador",
-  });
-};
-
 module.exports = {
-  obtenerUsuario,
+  obtenerUsuarios,
   crearUsuario,
   actualizarUsuario,
   eliminarUsuario,

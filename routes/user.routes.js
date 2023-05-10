@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const {
-  obtenerUsuario,
+  obtenerUsuarios,
   actualizarUsuario,
   crearUsuario,
   eliminarUsuario,
@@ -13,7 +13,7 @@ const { esRoleValido, existeEmail, existeUsuarioPorId } = require("../helpers/db
 
 
 const router = Router();
-router.get("/",obtenerUsuario);
+router.get("/",obtenerUsuarios);
 
 router.put("/:id",[
   check('id', "No es un id valido").isMongoId(),
@@ -31,6 +31,10 @@ router.post("/",[
   validarCampos
 ], crearUsuario);
 
-router.delete("/", eliminarUsuario);
+router.delete("/:id",[
+  check('id', "No es un id valido").isMongoId(),
+  check('id').custom( existeUsuarioPorId ),
+  validarCampos
+], eliminarUsuario);
 
 module.exports = router;
