@@ -5,7 +5,8 @@ const {
   validarCampos,
   validarJWT,
   tieneRole,
-} = require("../middlewares/index");
+  esAdminRole,
+} = require("../middlewares");
 const {
   crearCategoria,
   obtenerCategorias,
@@ -55,7 +56,7 @@ router.put("/:id",[
 //eliminar una categoría - admin
 router.delete("/:id",[
     validarJWT,
-    tieneRole("ADMIN_ROLE"),
+    esAdminRole,
     check('id', 'El id no es valido').isMongoId(),
     check('id').custom( existeCategoriaPorId ),
     validarCampos
